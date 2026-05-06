@@ -1,2 +1,6 @@
+from .cpumonitor import CpuMonitor
+
+
 def main() -> None:
-    print("Hello from system-monitor!")
+    cpu_monitor = CpuMonitor()
+    cpu_monitor.display_cores()
