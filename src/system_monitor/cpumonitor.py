@@ -24,20 +24,26 @@ class CpuMonitor:
         cpu_string += f"{cpu_percent}%"
         return cpu_string
 
+    def _cpu_color(self, term: Terminal, percent: float) -> str:
+        match percent:
+            case _ if percent < 26:
+                return term.darkolivegreen2
+            case _ if percent < 51:
+                return term.yellow
+            case _ if percent < 76:
+                return term.orange
+            case _ if percent < 91:
+                return term.orangered
+            case _:
+                return term.red
+
     def display_cores(self, term: Terminal) -> None:
         self._total_usage = psutil.cpu_percent(interval=0.1)
-        cpus_string = f"Total CPU %: {self._total_usage}%"
+        cpus_string = f"Total CPU %: {self._total_usage}%\n"
         cpus = psutil.cpu_percent(interval=0.1, percpu=True)
-        cpus_string += (
-            f"\n| {self._standardize_width(cpu_num=0, cpu_percent=cpus[0])} |"
-        )
-        for i in range(1, self._num_cores):
+        for i in range(0, self._num_cores):
             if i % 2 == 0:
-                cpus_string += (
-                    f"| {self._standardize_width(cpu_num=i, cpu_percent=cpus[i])} |"
-                )
+                cpus_string += f"| {self._cpu_color(term=term, percent=cpus[i])}{self._standardize_width(cpu_num=i, cpu_percent=cpus[i])}{term.normal} |"
             else:
-                cpus_string += (
-                    f" {self._standardize_width(cpu_num=i, cpu_percent=cpus[i])} |\n"
-                )
+                cpus_string += f" {self._cpu_color(term=term, percent=cpus[i])}{self._standardize_width(cpu_num=i, cpu_percent=cpus[i])}{term.normal} |\n"
         print(term.home + term.clear + cpus_string)

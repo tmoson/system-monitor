@@ -15,7 +15,7 @@ class Display:
             self.cpu_monitor = cpu_monitor
 
     async def run(self) -> None:
-        with self.term.cbreak():
+        with self.term.fullscreen(), self.term.cbreak(), self.term.no_line_wrap():
             while True:
                 key = await self.term.async_inkey(0.5)
                 if key == "q":
