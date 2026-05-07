@@ -1,6 +1,8 @@
-from .cpumonitor import CpuMonitor
+from .display import Display
+import asyncio
 
 
 def main() -> None:
-    cpu_monitor = CpuMonitor()
-    cpu_monitor.display_cores()
+    display = Display()
+    asyncio.run(display.run())
+    print("Goodbye.")
